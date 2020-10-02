@@ -1,0 +1,43 @@
+Reading output-1a3aA/1a3aA.dist_1.pdb
+Reading output-1a3aA/1a3aA.dist_10.pdb
+Reading output-1a3aA/1a3aA.dist_11.pdb
+Reading output-1a3aA/1a3aA.dist_12.pdb
+Reading output-1a3aA/1a3aA.dist_14.pdb
+Reading output-1a3aA/1a3aA.dist_15.pdb
+Reading output-1a3aA/1a3aA.dist_16.pdb
+Reading output-1a3aA/1a3aA.dist_17.pdb
+Reading output-1a3aA/1a3aA.dist_19.pdb
+Reading output-1a3aA/1a3aA.dist_2.pdb
+Reading output-1a3aA/1a3aA.dist_3.pdb
+Reading output-1a3aA/1a3aA.dist_4.pdb
+Reading output-1a3aA/1a3aA.dist_5.pdb
+Reading output-1a3aA/1a3aA.dist_7.pdb
+Reading output-1a3aA/1a3aA.dist_8.pdb
+Reading output-1a3aA/1a3aA.dist_model1.pdb
+Reading output-1a3aA/1a3aA.dist_model2.pdb
+Reading output-1a3aA/1a3aA.dist_model3.pdb
+Reading output-1a3aA/1a3aA.dist_model4.pdb
+Reading output-1a3aA/1a3aA.dist_model5.pdb
+Reading output-1a3aA/extended.pdb
+TM	RMSD	GDTTS	MODEL
+0.0906	80.43	7.76	output-1a3aA/extended.pdb
+0.2442	13.99	18.97	output-1a3aA/1a3aA.dist_16.pdb
+0.2522	14.04	21.03	output-1a3aA/1a3aA.dist_2.pdb
+0.2622	13.82	21.90	output-1a3aA/1a3aA.dist_7.pdb
+0.3941	7.49	30.52	output-1a3aA/1a3aA.dist_17.pdb
+0.3988	7.56	32.07	output-1a3aA/1a3aA.dist_model5.pdb
+0.4029	7.80	32.24	output-1a3aA/1a3aA.dist_model1.pdb
+0.4033	8.35	31.72	output-1a3aA/1a3aA.dist_15.pdb
+0.4065	7.67	32.93	output-1a3aA/1a3aA.dist_11.pdb
+0.4070	7.31	33.79	output-1a3aA/1a3aA.dist_5.pdb
+0.4098	7.63	32.41	output-1a3aA/1a3aA.dist_model4.pdb
+0.4108	7.16	33.28	output-1a3aA/1a3aA.dist_model3.pdb
+0.4111	6.91	32.59	output-1a3aA/1a3aA.dist_19.pdb
+0.4144	7.65	32.59	output-1a3aA/1a3aA.dist_1.pdb
+0.4175	6.80	32.07	output-1a3aA/1a3aA.dist_10.pdb
+0.4188	6.91	34.48	output-1a3aA/1a3aA.dist_model2.pdb
+0.4223	6.48	32.76	output-1a3aA/1a3aA.dist_14.pdb
+0.4334	7.15	33.79	output-1a3aA/1a3aA.dist_4.pdb
+0.4359	6.67	33.28	output-1a3aA/1a3aA.dist_3.pdb
+0.4513	6.63	35.86	output-1a3aA/1a3aA.dist_12.pdb
+0.4574	6.59	35.69	output-1a3aA/1a3aA.dist_8.pdb

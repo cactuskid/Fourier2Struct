@@ -1,0 +1,43 @@
+Reading output-1guu//1guu_1.pdb
+Reading output-1guu//1guu_11.pdb
+Reading output-1guu//1guu_12.pdb
+Reading output-1guu//1guu_14.pdb
+Reading output-1guu//1guu_15.pdb
+Reading output-1guu//1guu_16.pdb
+Reading output-1guu//1guu_17.pdb
+Reading output-1guu//1guu_18.pdb
+Reading output-1guu//1guu_2.pdb
+Reading output-1guu//1guu_3.pdb
+Reading output-1guu//1guu_5.pdb
+Reading output-1guu//1guu_6.pdb
+Reading output-1guu//1guu_7.pdb
+Reading output-1guu//1guu_8.pdb
+Reading output-1guu//1guu_9.pdb
+Reading output-1guu//1guu_model1.pdb
+Reading output-1guu//1guu_model2.pdb
+Reading output-1guu//1guu_model3.pdb
+Reading output-1guu//1guu_model4.pdb
+Reading output-1guu//1guu_model5.pdb
+Reading output-1guu//extended.pdb
+TM	RMSD	GDTTS	MODEL
+0.1075	37.61	15.50	output-1guu//extended.pdb
+0.3386	8.96	47.00	output-1guu//1guu_15.pdb
+0.4852	4.86	61.00	output-1guu//1guu_17.pdb
+0.5006	4.47	62.50	output-1guu//1guu_model4.pdb
+0.5287	4.31	64.00	output-1guu//1guu_6.pdb
+0.5391	4.15	65.00	output-1guu//1guu_14.pdb
+0.5401	3.84	65.00	output-1guu//1guu_1.pdb
+0.5422	3.57	66.50	output-1guu//1guu_11.pdb
+0.5445	3.96	67.00	output-1guu//1guu_3.pdb
+0.5491	4.40	67.00	output-1guu//1guu_5.pdb
+0.5525	4.08	67.00	output-1guu//1guu_model3.pdb
+0.5525	4.12	67.00	output-1guu//1guu_2.pdb
+0.5542	3.94	67.00	output-1guu//1guu_18.pdb
+0.5641	3.49	68.00	output-1guu//1guu_7.pdb
+0.5706	3.60	68.50	output-1guu//1guu_9.pdb
+0.5764	4.11	69.00	output-1guu//1guu_16.pdb
+0.5772	4.03	69.00	output-1guu//1guu_8.pdb
+0.5838	3.98	68.50	output-1guu//1guu_model5.pdb
+0.5873	3.92	71.00	output-1guu//1guu_model1.pdb
+0.5991	3.97	69.50	output-1guu//1guu_model2.pdb
+0.6035	3.73	71.00	output-1guu//1guu_12.pdb

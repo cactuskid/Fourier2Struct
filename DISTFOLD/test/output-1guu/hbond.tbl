@@ -1,0 +1,16 @@
+assign (resid   6 and name O) (resid  10 and name H) 2.12 0.20 0.10 !helix
+assign (resid   7 and name O) (resid  11 and name H) 2.12 0.20 0.10 !helix
+assign (resid   8 and name O) (resid  12 and name H) 2.12 0.20 0.10 !helix
+assign (resid   9 and name O) (resid  13 and name H) 2.12 0.20 0.10 !helix
+assign (resid  10 and name O) (resid  14 and name H) 2.12 0.20 0.10 !helix
+assign (resid  11 and name O) (resid  15 and name H) 2.12 0.20 0.10 !helix
+assign (resid  12 and name O) (resid  16 and name H) 2.12 0.20 0.10 !helix
+assign (resid  13 and name O) (resid  17 and name H) 2.12 0.20 0.10 !helix
+assign (resid  14 and name O) (resid  18 and name H) 2.12 0.20 0.10 !helix
+assign (resid  15 and name O) (resid  19 and name H) 2.12 0.20 0.10 !helix
+assign (resid  24 and name O) (resid  28 and name H) 2.12 0.20 0.10 !helix
+assign (resid  25 and name O) (resid  29 and name H) 2.12 0.20 0.10 !helix
+assign (resid  26 and name O) (resid  30 and name H) 2.12 0.20 0.10 !helix
+assign (resid  39 and name O) (resid  43 and name H) 2.12 0.20 0.10 !helix
+assign (resid  40 and name O) (resid  44 and name H) 2.12 0.20 0.10 !helix
+assign (resid  41 and name O) (resid  45 and name H) 2.12 0.20 0.10 !helix

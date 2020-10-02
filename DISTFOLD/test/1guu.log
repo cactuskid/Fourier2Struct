@@ -1,0 +1,51 @@
+Start [../distfold.pl]: Thu Apr  4 23:46:30 2019
+
+id            1guu          
+L             50           
+dir_out       /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu     
+file_rr       1guu.rr     
+file_ss       1guu.ss     
+
+input_rr      1036 lines
+selectrr      50 (1.0L)
+min-seq-sep   6 
+rrtype        cb      
+allnoewt      10  
+sswt          5        
+mcount        20      
+atomselect    2  
+
+ss-a-relax    0 
+ss-d-relax    0 
+rep2          0.85        
+pthres        7.5      
+rep1          1        
+minimization  15000        
+mode          trial        
+
+rswitch       0.5     
+ceiling       1000     
+asymptote     1.0   
+sqconstant    1.0  
+sqexponent    2  
+soexponent    1  
+
+KTRWTREEDEKLKKLVEQNGTDDWKVIANYLPNRTDVQCQHRWQKVLNPE(input-sequence)
+CCCCCHHHHHHHHHHHHHHCCCCHHHHHHHCCCCCCCEHHHHHHHCCCCC(input-ss)
+
+Build extended mtf and pdb..
+
+KTRWTREEDEKLKKLVEQNGTDDWKVIANYLPNRTDVQCQHRWQKVLNPE
+CCCCCHHHHHHHHHHHHHHCCCCHHHHHHHCCCCCCCEHHHHHHHCCCCC
+--16---11-261-34-13--1-2-173-44--5413161344-1----- [ contact.tbl :  42 restraints touching 29 residues]
+----1344444444444431--134444431------134444431---- [dihedral.tbl :  56 restraints touching 34 residues]
+-----11112222221111----111-111--------111-111----- [   hbond.tbl :  16 restraints touching 26 residues]
+-----*************8----**848*8--------**848*8----- [   ssnoe.tbl : 180 restraints touching 28 residues]
+
+Starting job [/data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/job.sh > job.log]model1.pdb <= /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/1guu_20.pdb
+model2.pdb <= /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/1guu_19.pdb
+model3.pdb <= /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/1guu_13.pdb
+model4.pdb <= /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/1guu_10.pdb
+model5.pdb <= /data/ieee-icmla-2019/DISTFOLD-v0.1/test/output-1guu/1guu_4.pdb
+
+Finished [../distfold.pl]: Thu Apr  4 23:48:29 2019
