@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=4G
+#SBATCH --mem=16G
 #SBATCH --time=04:00:00
 #SBATCH --job-name=jupyter-notebook
 
@@ -30,8 +30,9 @@ localhost:${port}  (prefix w/ https:// if using password)
 # load environment, e.g. set virtualenv, environment variables, etc
 
 
-source /scratch/dmoi/miniconda/etc/profile.d/conda.sh
-conda activate ML
+source /users/fgieruc/miniconda3/etc/profile.d/conda.sh
+conda activate structML
+
 
 # Run Jupyter
 
