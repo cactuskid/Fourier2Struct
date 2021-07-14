@@ -2,7 +2,7 @@
 import os
 import glob
 import sys
-import wget
+#import wget
 import time
 import subprocess
 import shlex
@@ -122,7 +122,7 @@ class NDSPCA(TransformerMixin):
         return X
 
 #global parameters--------------------------------------------------------------------------------------------------------------------
-verbose = False
+verbose = True
 #how many components to keep after PCA?
 components = 300
 #clipping value for FFT components (how many components should be kept?)
@@ -144,16 +144,16 @@ def fit_y( y, components = components, FFT = False):
         
         y = np.stack([ np.fft.rfft2(y[i,:,:]) for i in range(y.shape[0])] )
         if verbose:
-        	print(y.shape)
+            print(y.shape)
         y =  np.hstack( [ np.real(y) , np.imag(y)]  )
     if verbose:
-    	print(y.shape)
+        print(y.shape)
     ndpca = NDSPCA(n_components=components)
        
     ndpca.fit(y)
     if verbose:
-    	print('explained variance')
-    	print(np.sum(ndpca.explained_variance_ratio_))
+        print('explained variance')
+        print(np.sum(ndpca.explained_variance_ratio_))
     
     scaler0 = NDSRobust()
     scaler0.fit(y)
@@ -164,7 +164,7 @@ def transform_y(y, scaler0, ndpca, FFT = False):
     if FFT == True:
         y = np.stack([np.fft.rfft2(y[i,:,:]) for i in range(y.shape[0])])
         if verbose:
-        	print(y.shape)
+            print(y.shape)
         y =  np.hstack( [ np.real(y) , np.imag(y)]  )
     
     y = ndpca.transform(y)
@@ -172,7 +172,7 @@ def transform_y(y, scaler0, ndpca, FFT = False):
     scaler0.fit(y)
     y = scaler0.transform(y)
     if verbose:
-    	print(y.shape)
+        print(y.shape)
     
     return y, scaler0
 
@@ -194,16 +194,16 @@ def fit_x(x, components = components, FFT = False):
         
         x = np.stack([ np.fft.rfftn(x[i,:,:,:]) for i in range(x.shape[0])] )
         if verbose:
-        	print(x.shape)
+            print(x.shape)
         x =  np.hstack( [ np.real(x) , np.imag(x)]  )
     if verbose:
-    	print(x.shape)
+        print(x.shape)
     ndpca = NDSPCA(n_components=components)
     
     ndpca.fit(x)
     if verbose:
-    	print('explained variance')
-    	print(np.sum(ndpca.explained_variance_ratio_))
+        print('explained variance')
+        print(np.sum(ndpca.explained_variance_ratio_))
     
     scaler0 = NDSRobust()
     scaler0.fit(x)
@@ -214,7 +214,7 @@ def transform_x(x, scaler0, ndpca, FFT = False):
     if FFT == True:
         x = np.stack([ np.fft.rfftn(x[i,:,:,:]) for i in range(x.shape[0])] )
         if verbose:
-        	print(x.shape)
+            print(x.shape)
         x =  np.hstack( [ np.real(x) , np.imag(x)]  )
 
     x = ndpca.transform(x)
@@ -222,7 +222,7 @@ def transform_x(x, scaler0, ndpca, FFT = False):
     scaler0.fit(x)
     x = scaler0.transform(x)
     if verbose:
-    	print(x.shape)
+        print(x.shape)
     
     return x, scaler0
 
@@ -406,18 +406,18 @@ def fourierAligns(aligns, verbose = False):
     return alignsFFT
 
 def fourierAlign(align):
-	temp = np.fft.rfftn(align)
-	alignFFT = np.dstack([np.real(temp), np.imag(temp)])
+    temp = np.fft.rfftn(align)
+    alignFFT = np.dstack([np.real(temp), np.imag(temp)])
 
-	return alignFFT
+    return alignFFT
 
 def clipAlign(align):
-	final = np.zeros((clippingSize, clippingSize, propAmount + 2)) #for some reason we gain 1 depth layer after FFT, so it's +2 and not +1
-    if(align.shape[0] <= clippingSize and align.shape[1] <= clippingSize):
+    final = np.zeros((clippingSize, clippingSize, propAmount + 2)) #for some reason we gain 1 depth layer after FFT, so it's +2 and not +1
+    if (align.shape[0] <= clippingSize and align.shape[1] <= clippingSize):
         final[:align.shape[0],:align.shape[1],:align.shape[2]] = align
-    elif(align.shape[0] <= clippingSize and align.shape[1] > clippingSize):
+    elif (align.shape[0] <= clippingSize and align.shape[1] > clippingSize):
         final[:align.shape[0],:,:align.shape[2]] = align[:,:clippingSize,:]
-    elif(align.shape[0] > clippingSize and align.shape[1] <= clippingSize):
+    elif (align.shape[0] > clippingSize and align.shape[1] <= clippingSize):
         final[:,:align.shape[1],:align.shape[2]] = align[:clippingSize,:,:]
     else:
         final[:,:,:align.shape[2]] = align[:clippingSize,:clippingSize,:]
@@ -449,7 +449,7 @@ def generateVoxelArray(aligns, propAmount = 12, clippingSize = maxFFTComponents,
     
     voxels = np.stack(alignsList, axis=0)
     if verbose:
-    	print('voxels shape: ', voxels.shape)
+        print('voxels shape: ', voxels.shape)
     
     return voxels
 
@@ -466,36 +466,36 @@ def filterChains(structs, availableChainData):
                     chainValid[s][chain] = False
                 elif chainLetter not in set(availableChainData[availableChainData['PDB'] == protein]['CHAIN'].tolist()):  #checking if the chain has corresponding pfam data 
                     chainValid[s][chain] = False
-                else
+                else:
                     chainValid[s][chain] = True
                     
     return chainValid
 
 #after filtering the distmat data, the dataframe must be adjusted to only include valid chain-pfam couplings and to excluse empty chains
 def filterDataFrame(data_df, proteinList, protChainIndexes, verbose = False):
-	'''multiple pfam files are sometimes used to represent the same chain, for now only the first is used
-	   in the future, restructuring the data prep code could allow to keep all pfam data'''
-	proteinChainLetters = list()
+    '''multiple pfam files are sometimes used to represent the same chain, for now only the first is used
+       in the future, restructuring the data prep code could allow to keep all pfam data'''
+    proteinChainLetters = list()
 
-	for protein in proteinList:
-	    for chain in protChainIndexes[protein].keys():
-	        proteinChainLetters.append(''.join([c for c in str(chain) if c.isupper()])[1:])
+    for protein in proteinList:
+        for chain in protChainIndexes[protein].keys():
+            proteinChainLetters.append(''.join([c for c in str(chain) if c.isupper()])[1:])
 
-	chainLettersTuples = list(zip(proteinList, proteinChainLetters))
+    chainLettersTuples = list(zip(proteinList, proteinChainLetters))
 
-	keep_indexes = list()
-	no_dupes = list()
-	for i in list(data_df.index.values):
-	    if (data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']) in chainLettersTuples:
-	        if (data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']) not in no_dupes:
-	            no_dupes.append((data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']))
-	            keep_indexes.append(i)
+    keep_indexes = list()
+    no_dupes = list()
+    for i in list(data_df.index.values):
+        if (data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']) in chainLettersTuples:
+            if (data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']) not in no_dupes:
+                no_dupes.append((data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']))
+                keep_indexes.append(i)
 
-	data_df = data_df[data_df.index.isin(keep_indexes)]
-	if verbose:
-		print(data_df)
+    data_df = data_df[data_df.index.isin(keep_indexes)]
+    if verbose:
+        print(data_df)
 
-	return data_df
+    return data_df
 
 #builds a dictionary of distmats in the set - structs is a dictionary of all the structures (which are then subdivided into chains)
 def PDBToDistmat(structs, verbose = False):
@@ -534,7 +534,7 @@ def fourierDistmats(distmats):
     return distmatsFFT
 
 def fourierDistmat(distmat):
-	temp = np.fft.rfftn(distmat)
+    temp = np.fft.rfftn(distmat)
     distmatFFT = np.hstack([np.real(temp), np.imag(temp)])
 
     return distmatFFT
@@ -556,7 +556,7 @@ def inverseFourierDistmat(distmatFFT, verbose = False):
     return restored_distmat
 
 def clipDistmat(distmat):
-	final = np.zeros((clippingSize, clippingSize))
+    final = np.zeros((clippingSize, clippingSize))
     if(distmat.shape[0] <= clippingSize and distmat.shape[1] <= clippingSize):
         final[:distmat.shape[0], :distmat.shape[1]] = distmat
     elif(distmat.shape[0] <= clippingSize and distmat.shape[1] > clippingSize):
@@ -572,7 +572,7 @@ def clipDistmat(distmat):
 
 #generate the dict which is used when filtering dataframe for correct chain data. distances is the entire used dataset of distmat dicts
 def buildProtChainDict(distances, availableChainData, proteinsList, verbose = False):
-	chainIndexDict = dict()
+    chainIndexDict = dict()
     protChainsIndexList = list()
     
     for protein in proteinsList:
@@ -662,7 +662,7 @@ def distmatDictToArray(distances, availableChainData, proteinsList, clippingSize
         print('amount of arrays after flattening nested list: ', len(arrayList))
     
     #apply FFT to the distmats
-    arrayListFFT = fourierDistmats(arrayList, verbose)
+    arrayListFFT = fourierDistmats(arrayList)
 
     #pad or clip all aligns to be the same size, based on how many components of the FFT we want to keep
     for i in range(len(arrayListFFT)):
@@ -719,14 +719,14 @@ filepath = '../data/pdb_chain_pfam.csv'
 pdb_chain_pfam_df = pd.read_csv(filepath, header=1)
 
 if verbose:
-	print(pdb_chain_pfam_df)
+    print(pdb_chain_pfam_df)
 
 #download the PDB files
 #get pdb ids
 models_all = pdb_chain_pfam_df['PDB'].tolist()
 models = models_all[:]
 if verbose:
-	print(len(models))
+    print(len(models))
 
 dl_url = 'http://files.rcsb.org/download/'
 dl_url_err = 'http://files.rcsb.org/download/'
@@ -741,14 +741,14 @@ for m in models:
             structs[m.strip()] = structfile
             
 if verbose:
-	print(len(structs))
+    print(len(structs))
 
 #getting the alignments
 alnNames_all = pdb_chain_pfam_df['PFAM_ID'].tolist()
 alnNames = alnNames_all[:]
 
 if verbose:
-	print(len(alnNames))
+    print(len(alnNames))
 
 filepath = 'Pfam-A.seed.h5'
 keys = list()
@@ -769,7 +769,7 @@ pfamDict = {'PFAM_ID':keys, 'aligns':aligns}
 pfamDF = pd.DataFrame(pfamDict)
 
 if verbose:
-	print(pfamDF)
+    print(pfamDF)
     
 #merge sifts dataframe and pfam dataframe to remove missing alignments
 pdb_chain_pfam_df = pdb_chain_pfam_df.merge(pfamDF, how='inner', on='PFAM_ID')
@@ -818,20 +818,20 @@ if sampling:
     structs_data = samples_structs
     data_df = samples_df
 else:
-	structs_data = structs
-	data_df = pdb_chain_pfam_df
+    structs_data = structs
+    data_df = pdb_chain_pfam_df
 
 columnList = {'PDB', 'CHAIN'}
 availableChainData = data_df[columnList]
 
 if verbose:
-	print('parsing PDB files...')
+    print('parsing PDB files...')
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     structseqs = parsePDB(structs_data)
 
 if verbose:
-	print('building distmat dictionaries...')
+    print('building distmat dictionaries...')
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     distances = PDBToDistmat(structs_data, verbose)
@@ -839,20 +839,20 @@ with warnings.catch_warnings():
 protChainIndexes = dict()
 
 if verbose:
-	print('building distmat arrays...')
+    print('building distmat arrays...')
 
 #build final protein list by removing dupes but keeping order
 proteinList = list()
 proteinListDupes = data_df['PDB'].tolist()
 proteinsAlready = set()
 for p in proteinListDupes:
-	if p in proteinsAlready: continue
-	proteinList.append(p)
-	proteinsAlready.add(p)
+    if p in proteinsAlready: continue
+    proteinList.append(p)
+    proteinsAlready.add(p)
 
 distmats, arrayListForTest, protChainIndexes = distmatDictToArray(distances, availableChainData, proteinList, verbose)
 if verbose:
-	print('distmats shape: ', distmats.shape)
+    print('distmats shape: ', distmats.shape)
 
 #after filtering the distmat data, the dataframe must be adjusted
 data_df = filterDataFrame(data_df, proteinList, protChainIndexes, verbose)
@@ -864,7 +864,7 @@ aligns = list(data_df['aligns'])
 #ProtFeat cannot handle X (unknown AA) in sequence, replacing all Xs with alanine (A) -- arbitrarily
 #also added fix to the ProtFeat functions to replace B, Z, X in the sequence string
 if verbose:
-	print('replacing ambiguous letters in the alignments...')
+    print('replacing ambiguous letters in the alignments...')
 i = 0
 j = 0
 k = 0
@@ -886,19 +886,19 @@ for align in aligns:
     j = 0
     
 if verbose:
-	print('n° of aligns: ', len(aligns))
+    print('n° of aligns: ', len(aligns))
 
 if verbose:
-	print('building voxels...')
+    print('building voxels...')
 voxels = generateVoxelArray(aligns, propAmount, verbose)
 
 if verbose:
-	print("VOXELS: ")
+    print("VOXELS: ")
 ndpcaX, scalerX = fit_x(voxels, components = 30, FFT = False)
 transformed_voxels, scalerX = transform_x(voxels, scalerX, ndpcaX, FFT = False)
 
 if verbose:
-	print("DISTMATS: ")
+    print("DISTMATS: ")
 ndpcaY, scalerY = fit_y(distmats, components = 30, FFT = False)
 transformed_distmats, scalerY = transform_y(distmats, scalerY, ndpcaY, FFT = False)
 
