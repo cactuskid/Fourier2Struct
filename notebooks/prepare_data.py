@@ -429,7 +429,7 @@ def generateVoxelArray(aligns, propAmount = 12, clippingSize = maxFFTComponents,
     #generate voxel array
     alignsList = []
     for i in range(len(aligns)):
-        alignsList.append(generateAlignVoxel(aligns[i], verbose))
+        alignsList.append(generateAlignVoxel(aligns[i], propAmount, verbose))
     
     #apply fourier transform to aligns before padding
     alignsList = fourierAligns(alignsList, verbose)
@@ -453,35 +453,46 @@ def generateVoxelArray(aligns, propAmount = 12, clippingSize = maxFFTComponents,
     
     return voxels
 
-#keep only chains with usable data (between 50 and 1500 AAs long, corresponding to a pfam MSA), returns True if chain meets requirements
+#keep only chains with usable data (between 50 and 1500 AAs long, corresponding to a pfam MSA), returns list of pdb_id-chain tuples meeting requirements (pass this list to filterDataFrameBefore to remove all non-usable chains)
 def filterChains(structs, availableChainData):
-    chainValid = {}
+    validChainsList = list()
     for s in structs:
         Structure = PDBParser().get_structure(s, structs[s])
-        chainValid[s] = {}
         for model in Structure:
             for chain in model:
                 chainLetter = ''.join([c for c in str(chain) if c.isupper()])[1:]
                 if(len(chain) < 50 or len(chain) > 1500):
-                    chainValid[s][chain] = False
-                elif chainLetter not in set(availableChainData[availableChainData['PDB'] == protein]['CHAIN'].tolist()):  #checking if the chain has corresponding pfam data 
-                    chainValid[s][chain] = False
+                    continue
+                elif chainLetter not in set(availableChainData[availableChainData['PDB'] == s]['CHAIN'].tolist()):  #checking if the chain has corresponding pfam data 
+                    continue
                 else:
-                    chainValid[s][chain] = True
+                    validChainsList.append((s, chainLetter))
                     
-    return chainValid
+    return validChainsList
+
+def filterDataFrameBefore(validChainsList, data_df):
+    keep_indexes = list()
+    for i in list(data_df.index.values):
+        if (data_df.loc[i, 'PDB'], data_df.loc[i, 'CHAIN']) in validChainsList:
+            keep_indexes.append(i)
+        
+    data_df = data_df[data_df.index.isin(keep_indexes)]
+    
+    return data_df
 
 #after filtering the distmat data, the dataframe must be adjusted to only include valid chain-pfam couplings and to excluse empty chains
-def filterDataFrame(data_df, proteinList, protChainIndexes, verbose = False):
+def filterDataFrameAfter(data_df, proteinList, protChainIndexes, verbose = False):
     '''multiple pfam files are sometimes used to represent the same chain, for now only the first is used
        in the future, restructuring the data prep code could allow to keep all pfam data'''
     proteinChainLetters = list()
+    proteinRepList = list()
 
     for protein in proteinList:
         for chain in protChainIndexes[protein].keys():
+            proteinRepList.append(protein)
             proteinChainLetters.append(''.join([c for c in str(chain) if c.isupper()])[1:])
 
-    chainLettersTuples = list(zip(proteinList, proteinChainLetters))
+    chainLettersTuples = list(zip(proteinRepList, proteinChainLetters))
 
     keep_indexes = list()
     no_dupes = list()
@@ -498,7 +509,8 @@ def filterDataFrame(data_df, proteinList, protChainIndexes, verbose = False):
     return data_df
 
 #builds a dictionary of distmats in the set - structs is a dictionary of all the structures (which are then subdivided into chains)
-def PDBToDistmat(structs, verbose = False):
+#also adds the distmats to the corresponding data_df column
+def PDBToDistmat(structs, data_df, keepOnlyFirstChain, verbose = False):
     distances = {}
     for s in structs:
         Structure = PDBParser().get_structure(s, structs[s])
@@ -514,13 +526,25 @@ def PDBToDistmat(structs, verbose = False):
                 distmat = [ [res2['CA'] - res1['CA'] if 'CA' in res1 and 'CA' in res2 and i > j else 0 for i,res1 in enumerate(res)] for j,res2 in enumerate(res)]
                 distmat = np.array(distmat)
                 distmat+= distmat.T
-                distances[s][chain] = distmat  #the following condition on chain size is arbitrary and seems to work for now. chains too short or long were ignored for some reason (get_residues?). numbered chains may or may not be ok to use
+                distances[s][chain] = distmat
+                chainLetter = ''.join([c for c in str(chain) if c.isupper()])[1:]
+
+                sliced_data_df = data_df.loc[(data_df['PDB'] == s) & (data_df['CHAIN'] == chainLetter)]
+                if not sliced_data_df.empty:
+                    distmatList = list()
+                    for i in range(data_df.loc[(data_df['PDB'] == s) & (data_df['CHAIN'] == chainLetter)].shape[0]):
+                        distmatList.append(distmat)
+                    sliced_data_df['DISTMAT'] = distmatList
+                    data_df.loc[(data_df['PDB'] == s) & (data_df['CHAIN'] == chainLetter)] = sliced_data_df
+                    
+                #the following condition on chain size is arbitrary and seems to work for now. chains too short or long were ignored for some reason (get_residues?). numbered chains may or may not be ok to use
+                '''or str(chain) == '<Chain id=0>' or str(chain) == '<Chain id=1>' or str(chain) == '<Chain id=2>' or str(chain) == '<Chain id=3>' or str(chain) == '<Chain id=4>' or str(chain) == '<Chain id=5>' or str(chain) == '<Chain id=6>' or str(chain) == '<Chain id=7>' or str(chain) == '<Chain id=8>' or str(chain) == '<Chain id=9>' '''
                 if(len(chain) < 50 or len(chain) > 1500):
                     if(verbose):
                         print('continuing')
                     continue
     
-    return distances
+    return distances, data_df
 
 #fourier transform of all distmats, input is list of unpadded distmats, output is list of FFT of distmats
 def fourierDistmats(distmats):
@@ -789,6 +813,9 @@ pdbDF.columns = ['PDB']
 pdb_chain_pfam_df = pdb_chain_pfam_df.merge(pdbDF, how='inner', on='PDB')
 if verbose:
     print('post-merges: ', pdb_chain_pfam_df)
+    
+#adding empty column for the distmats
+pdb_chain_pfam_df['DISTMAT'] = np.nan
 
 if sampling:
     sampleIndexes = list()
@@ -850,7 +877,7 @@ for p in proteinListDupes:
     proteinList.append(p)
     proteinsAlready.add(p)
 
-distmats, arrayListForTest, protChainIndexes = distmatDictToArray(distances, availableChainData, proteinList, verbose)
+distmats, arrayListForTest, protChainIndexes = distmatDictToArray(distances, availableChainData, proteinList, maxFFTComponents, verbose)
 if verbose:
     print('distmats shape: ', distmats.shape)
 
@@ -890,7 +917,7 @@ if verbose:
 
 if verbose:
     print('building voxels...')
-voxels = generateVoxelArray(aligns, propAmount, verbose)
+voxels = generateVoxelArray(aligns, propAmount, maxFFTComponents, verbose)
 
 if verbose:
     print("VOXELS: ")
@@ -918,11 +945,11 @@ with open('scalerY.pkl', 'wb') as f:
 
 
 '''######order of operations for parallel processing######
--filterChains(structs) then remove all dataframe entries with value false
--distances = parsePDB(structs)
--buildProtChainDict(distances)
--filterDataFrame()
--add column to dataframe with distmat array? data_df['distmat'] = np.nan then function to fill with arrays
+-filterChains(structs) to obtain validChainsList --> use with warnings.catch_warnings(): warnings.simplefilter('ignore')
+-filterDataFrameBefore(validChainsList, data_df)
+-distances = PDBtoDistmat(structs, data_df) --> use with warnings.catch_warnings(): warnings.simplefilter('ignore'). this also adds the distmats into the corresponding dataframe column
+-buildProtChainDict(distances) to obtain chainIndexDict
+-filterDataFrameAfter(data_df, proteinList, chainIndexDict)
 
 -generateAlignVoxel() (calls generateGapMatrix())
 -fourierAlign()
